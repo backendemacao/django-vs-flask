@@ -1,0 +1,56 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<main class="container justify-items-center mt-5">
+  <h1>TODOs</h1>
+  <form action="{% url 'create-todo' %}" method="post">
+    {% csrf_token %}
+    <div class="row g-2">
+      <div class="col col-auto">
+        <button class="btn btn-primary" type="submit">Criar</button>
+      </div>
+      <div class="col col-6">{{ form.title }}</div>
+    </div>
+  </form>
+
+  <h2 class="mt-5">Incompletos</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Título</th>
+        <th scope="col">Ações</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      {% for todo in todos %}
+        {% if not todo.done %}
+        <tr>
+          <td>
+            <strong class="pt-1">{{ todo.title }}</strong>
+          </td>
+          <td class="d-flex">
+            <form class="py-1 px-2" action="{% url 'delete-todo' todo.pk %}" method="post">
+              {% csrf_token %}
+              <button class="btn  btn-danger" type="submit">Deletar</button>
+            </form>
+            <form class="py-1 px-2" action="{% url 'complete-todo' todo.pk %}" method="post">
+              {% csrf_token %}
+              <button class="btn  btn-success" type="submit">Completar</button>
+            </form>
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="mt-5">Completos</h2>
+  <ul>
+    {% for todo in todos %}
+      {% if todo.done %}
+        <li>{{ todo.title }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</main>
+{% endblock content %}
